@@ -25,7 +25,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class LoginActivity extends AppCompatActivity {
 
     private final int RC_SIGN_IN = 100;
-    Button btnFacebook, btnGoogle;
+    Button btnGoogle;
     private FirebaseAuth mAuth;
     GoogleSignInOptions gso;
     GoogleApiClient mGoogleApiClient;
@@ -62,7 +62,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        btnFacebook = (Button) findViewById(R.id.btn_facebook);
         btnGoogle = (Button) findViewById(R.id.btn_google);
     }
 

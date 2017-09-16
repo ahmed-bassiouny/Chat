@@ -1,6 +1,7 @@
 package com.example.ahmed.chat.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.ahmed.chat.R;
+import com.example.ahmed.chat.activity.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
@@ -53,6 +55,8 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 signOut();
+                startActivity(new Intent(getActivity(),LoginActivity.class));
+
             }
         });
     }

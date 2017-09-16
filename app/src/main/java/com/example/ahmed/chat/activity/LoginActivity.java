@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.ahmed.chat.R;
+import com.example.ahmed.chat.model.MyAccount;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -112,6 +113,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUI(FirebaseUser user) {
+        MyAccount.setId(user.getUid());
+        MyAccount.setUserName(user.getDisplayName());
+        MyAccount.setEmail(user.getEmail());
+        MyAccount.setImage(user.getPhotoUrl());
         if(user !=null){
             startActivity(new Intent(this,MainActivity.class));
         }

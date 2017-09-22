@@ -7,4 +7,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="error">Sorry Error Happened</string>
+    <string name="cant_find_one">Sorry Can\'t Find Someone To Talk With him</string>
 </resources>

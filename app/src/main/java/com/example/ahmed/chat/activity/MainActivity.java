@@ -1,10 +1,12 @@
 package com.example.ahmed.chat.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -15,7 +17,11 @@ import com.example.ahmed.chat.fragments.OlderChatFragment;
 import com.example.ahmed.chat.fragments.ProfileFragment;
 import com.example.ahmed.chat.helper.Constants;
 import com.example.ahmed.chat.model.MyAccount;
+import com.example.ahmed.chat.model.User;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -91,9 +97,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        addListenerChat();
+    }
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         // closee application this mean status is false
         FirebaseDatabase.getInstance().getReference(Constants.WAITINGLIST).child(MyAccount.getId()).setValue(false);
+    }
+    private void addListenerChat(){
+        FirebaseDatabase.getInstance().getReference(Constants.USER).child(MyAccount.getId()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User value = dataSnapshot.getValue(User.class);
+                if(value !=null){
+                    if(value.inChat){
+                        Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+                        intent.putExtra(Constants.SESSIONKEY,value.lastSession);
+                        startActivity(intent);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

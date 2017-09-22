@@ -126,7 +126,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadData(){
-        FirebaseDatabase.getInstance().getReference().child(Constants.User).addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child(Constants.USER).child(MyAccount.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User value = dataSnapshot.getValue(User.class);
@@ -134,9 +134,7 @@ public class ProfileFragment extends Fragment {
                     tvChatNumber.setText(String.valueOf(value.chatWith));
                     tvRate.setText(String.valueOf(value.rate)+" %");
                 }else {
-                    FirebaseDatabase.getInstance().getReference().child(Constants.User).setValue(new User());
-                    tvChatNumber.setText("0");
-                    tvRate.setText("0 %");
+                    FirebaseDatabase.getInstance().getReference().child(Constants.USER).child(MyAccount.getId()).setValue(new User());
                 }
             }
 

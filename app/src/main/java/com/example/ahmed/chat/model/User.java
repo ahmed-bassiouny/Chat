@@ -8,4 +8,6 @@ public class User {
 
     public int chatWith;
     public double rate;
+    public boolean inChat;
+    public String lastSession;
 }

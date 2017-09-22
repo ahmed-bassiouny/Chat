@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -20,8 +21,14 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.ahmed.chat.R;
 import com.example.ahmed.chat.activity.LoginActivity;
+import com.example.ahmed.chat.helper.Constants;
 import com.example.ahmed.chat.model.MyAccount;
+import com.example.ahmed.chat.model.User;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -96,6 +103,14 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser){
+            loadData();
+        }
+    }
+
     private void initView(View view) {
         tvName=view.findViewById(R.id.tv_name);
         tvEmail=view.findViewById(R.id.tv_email);
@@ -110,4 +125,25 @@ public class ProfileFragment extends Fragment {
         FirebaseAuth.getInstance().signOut();
     }
 
+    private void loadData(){
+        FirebaseDatabase.getInstance().getReference().child(Constants.User).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User value = dataSnapshot.getValue(User.class);
+                if (value !=null) {
+                    tvChatNumber.setText(String.valueOf(value.chatWith));
+                    tvRate.setText(String.valueOf(value.rate)+" %");
+                }else {
+                    FirebaseDatabase.getInstance().getReference().child(Constants.User).setValue(new User());
+                    tvChatNumber.setText("0");
+                    tvRate.setText("0 %");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Toast.makeText(getActivity(), R.string.error, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

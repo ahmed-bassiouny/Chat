@@ -13,6 +13,9 @@ import com.example.ahmed.chat.adapters.ViewPagerAdapter;
 import com.example.ahmed.chat.fragments.HomeFragment;
 import com.example.ahmed.chat.fragments.OlderChatFragment;
 import com.example.ahmed.chat.fragments.ProfileFragment;
+import com.example.ahmed.chat.helper.Constants;
+import com.example.ahmed.chat.model.MyAccount;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,10 +44,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
-                            case R.id.navigation_home:
+                            case R.id.navigation_profile:
                                 viewPager.setCurrentItem(0);
                                 return true;
-                            case R.id.navigation_dashboard:
+                            case R.id.navigation_home:
                                 viewPager.setCurrentItem(1);
                                 return true;
                             case R.id.navigation_notifications:
@@ -85,5 +88,12 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(HomeFragment.getInstance());
         adapter.addFragment(OlderChatFragment.getInstance());
         viewPager.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // closee application this mean status is false
+        FirebaseDatabase.getInstance().getReference(Constants.WAITINGLIST).child(MyAccount.getId()).setValue(false);
     }
 }

@@ -94,7 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="3"
+            android:text="0"
             android:textColor="@color/colorAccent"
             android:textSize="15sp" />
 
@@ -104,7 +104,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="26%"
+            android:text="0.0 %"
             android:textColor="@color/colorAccent"
             android:textSize="15sp" />
 

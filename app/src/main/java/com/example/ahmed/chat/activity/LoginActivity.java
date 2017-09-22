@@ -70,7 +70,9 @@ public class LoginActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
+        if(currentUser !=null){
+            updateUI(currentUser);
+        }
     }
 
     @Override
@@ -117,9 +119,8 @@ public class LoginActivity extends AppCompatActivity {
         MyAccount.setUserName(user.getDisplayName());
         MyAccount.setEmail(user.getEmail());
         MyAccount.setImage(user.getPhotoUrl());
-        if(user !=null){
-            startActivity(new Intent(this,MainActivity.class));
-        }
+        startActivity(new Intent(this,MainActivity.class));
+        finish();
     }
 
 }

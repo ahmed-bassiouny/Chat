@@ -132,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = new Intent(MainActivity.this, ChatActivity.class);
                         intent.putExtra(Constants.SESSION_KEY,value.lastSession);
                         startActivity(intent);
-                        finish();
                     }
                 }
             }

@@ -73,7 +73,9 @@ public class ChatActivity extends AppCompatActivity {
                 User value = dataSnapshot.getValue(User.class);
                 if(value !=null){
                     if(!value.inChat){
-                        // TODO : i will goto rate activity
+                        // TODO : i will goto rate dialog
+                        // TODO : Doalog to rate user don't forget it
+
                         if(session != null && !session.firstPerson.isEmpty() && !session.secondPerson.isEmpty()){
                             Intent intent = new Intent(ChatActivity.this, RateActivity.class);
                             intent.putExtra(Constants.FIRST_PERSON_KEY,session.firstPerson);
@@ -111,5 +113,10 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(this, "Sorry you must end chat first", Toast.LENGTH_SHORT).show();
     }
 }

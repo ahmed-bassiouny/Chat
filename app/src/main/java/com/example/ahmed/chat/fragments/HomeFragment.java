@@ -1,11 +1,9 @@
 package com.example.ahmed.chat.fragments;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.ahmed.chat.R;
-import com.example.ahmed.chat.activity.ChatActivity;
 import com.example.ahmed.chat.helper.Constants;
 import com.example.ahmed.chat.model.MyAccount;
 import com.example.ahmed.chat.model.Session;
@@ -33,7 +30,6 @@ public class HomeFragment extends Fragment {
     private Button btnListen, btnTalk, btnCancelRequest;
     private DatabaseReference myRef;
     private MKLoader mkLoader;
-    private boolean foundSomeone = false;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -64,7 +60,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void initObject() {
-        myRef = FirebaseDatabase.getInstance().getReference(Constants.WAITINGLIST);
+        myRef = FirebaseDatabase.getInstance().getReference(Constants.WAITING_LIST);
     }
 
 
@@ -135,6 +131,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean result;
+                boolean foundSomeone=false;
                 for (DataSnapshot item : dataSnapshot.getChildren()) {
                     result = item.getValue(Boolean.class);
                     if(result){
@@ -143,16 +140,15 @@ public class HomeFragment extends Fragment {
                         break;
                     }
                 }
-                if(foundSomeone){
-                    // intent
-                }else {
+                if(!foundSomeone){
+                    makeRequest(true);
                     Toast.makeText(getActivity(), R.string.cant_find_one, Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                Toast.makeText(getActivity(), R.string.error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -174,9 +170,9 @@ public class HomeFragment extends Fragment {
         session.secondPerson = personKey;
         FirebaseDatabase.getInstance().getReference(Constants.SESSION).child(sessionKey).setValue(session);
         // TODO : intent to chat activity with key message
-        Intent intent = new Intent(getActivity(), ChatActivity.class);
-        intent.putExtra(Constants.SESSIONKEY,sessionKey);
-        startActivity(intent);
+       /* Intent intent = new Intent(getActivity(), ChatActivity.class);
+        intent.putExtra(Constants.SESSION_KEY,sessionKey);
+        startActivity(intent);*/
     }
 
 }

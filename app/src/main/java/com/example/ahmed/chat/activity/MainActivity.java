@@ -6,9 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ahmed.chat.R;
 import com.example.ahmed.chat.adapters.ViewPagerAdapter;
@@ -28,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private BottomNavigationView navigation;
     MenuItem prevMenuItem;
+    ValueEventListener valueEventListener;
 
 
     @Override
@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         initView();
         handleEvent();
         setupViewPager();
+        valueEventListener=getListenerStatus();
     }
 
     private void initView() {
@@ -97,34 +98,49 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         addListenerChat();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        removeListenerChat();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // closee application this mean status is false
-        FirebaseDatabase.getInstance().getReference(Constants.WAITINGLIST).child(MyAccount.getId()).setValue(false);
+        // close application this mean status is false
+        FirebaseDatabase.getInstance().getReference(Constants.WAITING_LIST).child(MyAccount.getId()).setValue(false);
     }
     private void addListenerChat(){
-        FirebaseDatabase.getInstance().getReference(Constants.USER).child(MyAccount.getId()).addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference(Constants.USER).child(MyAccount.getId()).addValueEventListener(valueEventListener);
+    }
+    private void removeListenerChat(){
+        FirebaseDatabase.getInstance().getReference(Constants.USER).child(MyAccount.getId()).removeEventListener(valueEventListener);
+    }
+
+    private ValueEventListener getListenerStatus(){
+        return new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User value = dataSnapshot.getValue(User.class);
                 if(value !=null){
                     if(value.inChat){
                         Intent intent = new Intent(MainActivity.this, ChatActivity.class);
-                        intent.putExtra(Constants.SESSIONKEY,value.lastSession);
+                        intent.putExtra(Constants.SESSION_KEY,value.lastSession);
                         startActivity(intent);
+                        finish();
                     }
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Toast.makeText(MainActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        });
+        };
     }
 }

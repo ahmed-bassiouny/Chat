@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -26,6 +27,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class ChatActivity extends AppCompatActivity {
 
     ValueEventListener valueEventListener; // for end session
@@ -37,6 +40,7 @@ public class ChatActivity extends AppCompatActivity {
     EditText etNewMsg;
     ImageView ivSend;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,13 +51,15 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recycleview);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(mLayoutManager);
+
         etNewMsg = (EditText) findViewById(R.id.et_new_msg);
-        ivSend= (ImageView) findViewById(R.id.iv_send);
+        ivSend = (ImageView) findViewById(R.id.iv_send);
         ivSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(etNewMsg.getText().toString().trim().length()==0)
+                if (etNewMsg.getText().toString().trim().isEmpty())
                     return;
                 else {
                     Message message = new Message();
@@ -61,16 +67,17 @@ public class ChatActivity extends AppCompatActivity {
                     message.setMessageText(etNewMsg.getText().toString());
                     String key = FirebaseDatabase.getInstance().getReference(Constants.SESSION).child(lastSession).child(Constants.MESSAGE).push().getKey();
                     FirebaseDatabase.getInstance().getReference(Constants.SESSION).child(lastSession).child(Constants.MESSAGE).child(key).setValue(message);
+                    etNewMsg.setText("");
                 }
             }
         });
+        FirebaseDatabase.getInstance().getReference(Constants.SESSION).child(lastSession).child(Constants.MESSAGE).addChildEventListener(childEventListener);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        addListenerChat();
-        loadChat();
+        FirebaseDatabase.getInstance().getReference(Constants.USER).child(MyAccount.getId()).addValueEventListener(valueEventListener);
     }
 
     @Override
@@ -93,16 +100,12 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        removeListenerChat();
-    }
-
-    private void addListenerChat() {
-        FirebaseDatabase.getInstance().getReference(Constants.USER).child(MyAccount.getId()).addValueEventListener(valueEventListener);
-        FirebaseDatabase.getInstance().getReference(Constants.SESSION).child(lastSession).child(Constants.MESSAGE).addChildEventListener(childEventListener);
-    }
-
-    private void removeListenerChat() {
         FirebaseDatabase.getInstance().getReference(Constants.USER).child(MyAccount.getId()).removeEventListener(valueEventListener);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         FirebaseDatabase.getInstance().getReference(Constants.SESSION).child(lastSession).child(Constants.MESSAGE).removeEventListener(childEventListener);
     }
 
@@ -161,13 +164,17 @@ public class ChatActivity extends AppCompatActivity {
         Toast.makeText(this, "Sorry you must end chat first", Toast.LENGTH_SHORT).show();
     }
 
-    private void loadChat() {
-        FirebaseDatabase.getInstance().getReference(Constants.SESSION).child(lastSession).addListenerForSingleValueEvent(new ValueEventListener() {
+    /*private void loadChat() {
+        FirebaseDatabase.getInstance().getReference(Constants.SESSION).child(lastSession).child(Constants.MESSAGE).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Session session = dataSnapshot.getValue(Session.class);
-                itemChatAdapter = new ItemChatAdapter(session.getMessages());
-                recyclerView.setAdapter(itemChatAdapter);
+                ArrayList<Message> messages = new ArrayList<>();
+                for (DataSnapshot item : dataSnapshot.getChildren()) {
+                    Message message = item.getValue(Message.class);
+                    if (message == null)
+                        return;
+                    messages.add(message);
+                }
             }
 
             @Override
@@ -176,13 +183,18 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
-
+*/
     private ChildEventListener getListenerForNewMessage() {
         return new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Message message = dataSnapshot.getValue(Message.class);
-                itemChatAdapter.addItem(message);
+                if (itemChatAdapter == null) {
+                    itemChatAdapter = new ItemChatAdapter();
+                    recyclerView.setAdapter(itemChatAdapter);
+                }
+                itemChatAdapter.addMessage(message);
+                recyclerView.scrollToPosition(itemChatAdapter.getItemCount()-1);
             }
 
             @Override

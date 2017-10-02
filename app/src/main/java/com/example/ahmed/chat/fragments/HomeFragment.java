@@ -166,8 +166,8 @@ public class HomeFragment extends Fragment {
         FirebaseDatabase.getInstance().getReference(Constants.USER).child(personKey).child("lastSession").setValue(sessionKey);
         //TODO : create Session
         Session session = new Session();
-        session.firstPerson = MyAccount.getId();
-        session.secondPerson = personKey;
+        session.setFirstPerson(MyAccount.getId());
+        session.setSecondPerson(personKey);
         FirebaseDatabase.getInstance().getReference(Constants.SESSION).child(sessionKey).setValue(session);
         // TODO : intent to chat activity with key message
        /* Intent intent = new Intent(getActivity(), ChatActivity.class);

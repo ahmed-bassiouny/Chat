@@ -39,7 +39,6 @@ public class ProfileFragment extends Fragment {
     private static ProfileFragment mInstance;
     private ImageView profileImage;
     private TextView tvName,tvEmail,tvChatNumber,tvRate,tvSignOut;
-    private ProgressBar progressBar;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -68,21 +67,6 @@ public class ProfileFragment extends Fragment {
         tvEmail.setText(MyAccount.getEmail());
         Glide.with(getContext())
                 .load(MyAccount.getImage())
-                .listener(new RequestListener<Uri, GlideDrawable>() {
-            @Override
-            public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                profileImage.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
-                return false;
-            }
-
-            @Override
-            public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                profileImage.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
-                return false;
-            }
-        })
                 .into(profileImage);
     }
 
@@ -118,7 +102,6 @@ public class ProfileFragment extends Fragment {
         tvChatNumber=view.findViewById(R.id.tv_number_of_chat);
         profileImage=view.findViewById(R.id.profile_image);
         tvSignOut=view.findViewById(R.id.btn_signout);
-        progressBar=view.findViewById(R.id.progressBar);
     }
 
     private void signOut(){

@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView navigation;
     MenuItem prevMenuItem;
     ValueEventListener valueEventListener;
+    static boolean chatting=false;
 
 
     @Override
@@ -98,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         addListenerChat();
     }
 
@@ -128,7 +129,8 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User value = dataSnapshot.getValue(User.class);
                 if(value !=null){
-                    if(value.inChat){
+                    if(!chatting && value.inChat){
+                        chatting = true;
                         Intent intent = new Intent(MainActivity.this, ChatActivity.class);
                         intent.putExtra(Constants.SESSION_KEY,value.lastSession);
                         startActivity(intent);

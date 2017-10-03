@@ -12,21 +12,28 @@
         android:gravity="center"
         android:layout_margin="20dp"
         android:orientation="vertical">
-
-        <Button
+        <TextView
             android:id="@+id/btn_talk"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/borderprimary"
-            android:text="Say What you want" />
-
-        <Button
+            android:gravity="center"
+            android:text="Say What you want"
+            android:textSize="20sp" />
+        <TextView
             android:id="@+id/btn_listen"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:background="@drawable/borderprimary"
-            android:text="Listen" />
+            android:gravity="center"
+            android:text="Listen"
+            android:textSize="20sp" />
     </LinearLayout>
 
     <com.tuyenmonkey.mkloader.MKLoader
@@ -39,14 +46,15 @@
         app:mk_color="@color/colorAccent"
         app:mk_type="Worm" />
 
-    <Button
+    <TextView
         android:id="@+id/btn_cancelrequest"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="40dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="10dp"
-        android:enabled="false"
-        android:layout_margin="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/border"
-        android:text="Cancel Request" />
+        android:gravity="center"
+        android:text="Cancel Request"
+        android:textSize="20sp" />
 </RelativeLayout>

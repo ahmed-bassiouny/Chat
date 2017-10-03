@@ -72,6 +72,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
         FirebaseDatabase.getInstance().getReference(Constants.SESSION).child(lastSession).child(Constants.MESSAGE).addChildEventListener(childEventListener);
+        loadSession();
     }
 
     @Override
@@ -123,12 +124,8 @@ public class ChatActivity extends AppCompatActivity {
                             Intent intent = new Intent(ChatActivity.this, RateActivity.class);
                             intent.putExtra(Constants.FIRST_PERSON_KEY, session.getFirstPerson());
                             intent.putExtra(Constants.SECOND_PERSON_KEY, session.getSecondPerson());
-                            startActivity(intent);
                             finish();
-                        } else {
-                            Intent intent = new Intent(ChatActivity.this, MainActivity.class);
                             startActivity(intent);
-                            finish();
                         }
                     }
                 }
@@ -142,13 +139,17 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void updateUserstatus() {
+        FirebaseDatabase.getInstance().getReference(Constants.USER).child(session.getFirstPerson()).child("inChat").setValue(false);
+        FirebaseDatabase.getInstance().getReference(Constants.USER).child(session.getSecondPerson()).child("inChat").setValue(false);
+    }
+    private void loadSession(){
         FirebaseDatabase.getInstance().getReference(Constants.SESSION).child(lastSession).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 session = dataSnapshot.getValue(Session.class);
-                if (session != null) {
-                    FirebaseDatabase.getInstance().getReference(Constants.USER).child(session.getFirstPerson()).child("inChat").setValue(false);
-                    FirebaseDatabase.getInstance().getReference(Constants.USER).child(session.getSecondPerson()).child("inChat").setValue(false);
+                if (session == null) {
+                    Toast.makeText(ChatActivity.this, "Something Happened", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             }
 

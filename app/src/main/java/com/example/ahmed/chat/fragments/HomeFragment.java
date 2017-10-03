@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ahmed.chat.R;
@@ -27,7 +28,7 @@ import com.tuyenmonkey.mkloader.MKLoader;
 public class HomeFragment extends Fragment {
 
     private static HomeFragment mInstance;
-    private Button btnListen, btnTalk, btnCancelRequest;
+    private TextView btnListen, btnTalk, btnCancelRequest;
     private DatabaseReference myRef;
     private MKLoader mkLoader;
 
@@ -84,6 +85,7 @@ public class HomeFragment extends Fragment {
             public void onClick(View view) {
                 myRef.child(MyAccount.getId()).setValue(false);
                 makeRequest(true);
+                Toast.makeText(getActivity(), "You Canceled Request", Toast.LENGTH_SHORT).show();
             }
         });
         btnListen.setOnClickListener(new View.OnClickListener() {
@@ -152,7 +154,7 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-    private void findPerson(String personKey){
+    private void findPerson(final String personKey){
         // TODO : update status in chat in user model
         FirebaseDatabase.getInstance().getReference(Constants.USER).child(MyAccount.getId()).child("inChat").setValue(true);
         FirebaseDatabase.getInstance().getReference(Constants.USER).child(personKey).child("inChat").setValue(true);
@@ -160,19 +162,28 @@ public class HomeFragment extends Fragment {
         myRef.child(personKey).setValue(false);
         // TODO : make key in session root for 2 user
         DatabaseReference newRef = FirebaseDatabase.getInstance().getReference().child(Constants.SESSION).push();
-        String sessionKey = newRef.getKey();
+        final String sessionKey = newRef.getKey();
         // TODO : set key in user model for 2 user
         FirebaseDatabase.getInstance().getReference(Constants.USER).child(MyAccount.getId()).child("lastSession").setValue(sessionKey);
-        FirebaseDatabase.getInstance().getReference(Constants.USER).child(personKey).child("lastSession").setValue(sessionKey);
-        //TODO : create Session
-        Session session = new Session();
-        session.setFirstPerson(MyAccount.getId());
-        session.setSecondPerson(personKey);
-        FirebaseDatabase.getInstance().getReference(Constants.SESSION).child(sessionKey).setValue(session);
+        FirebaseDatabase.getInstance().getReference(Constants.USER).child(personKey).child("lastSession").setValue(sessionKey, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                //TODO : create Session
+                Session session = new Session();
+                session.setFirstPerson(MyAccount.getId());
+                session.setSecondPerson(personKey);
+                FirebaseDatabase.getInstance().getReference(Constants.SESSION).child(sessionKey).setValue(session);
+            }
+        });
         // TODO : intent to chat activity with key message
        /* Intent intent = new Intent(getActivity(), ChatActivity.class);
         intent.putExtra(Constants.SESSION_KEY,sessionKey);
         startActivity(intent);*/
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        makeRequest(true);
+    }
 }

@@ -33,12 +33,12 @@ public class RateActivity extends AppCompatActivity {
             userId = getIntent().getStringExtra(Constants.FIRST_PERSON_KEY);
         }
         getUserData();
-        FirebaseDatabase.getInstance().getReference(Constants.USER).child(userId).child("chatWith").setValue((numberOfChat+1));
         findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 currentRate += rating.getRating();
                 FirebaseDatabase.getInstance().getReference(Constants.USER).child(userId).child("rate").setValue(currentRate);
+                MainActivity.chatting=false;
                 finish();
             }
         });
@@ -55,7 +55,8 @@ public class RateActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 currentRate = user.rate;
-                numberOfChat = user.chatWith;
+                FirebaseDatabase.getInstance().getReference(Constants.USER).child(userId).child("chatWith").setValue((user.chatWith+1));
+
             }
 
             @Override

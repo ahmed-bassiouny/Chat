@@ -19,7 +19,6 @@ public class RateActivity extends AppCompatActivity {
 
     String userId;
     double currentRate;
-    int numberOfChat;
     RatingBar rating;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

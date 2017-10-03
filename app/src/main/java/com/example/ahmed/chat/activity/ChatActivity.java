@@ -24,6 +24,7 @@ import com.example.ahmed.chat.model.User;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -139,8 +140,19 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void updateUserstatus() {
-        FirebaseDatabase.getInstance().getReference(Constants.USER).child(session.getFirstPerson()).child("inChat").setValue(false);
-        FirebaseDatabase.getInstance().getReference(Constants.USER).child(session.getSecondPerson()).child("inChat").setValue(false);
+        FirebaseDatabase.getInstance().getReference(Constants.USER).child(session.getFirstPerson()).child("inChat").setValue(false, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                FirebaseDatabase.getInstance().getReference(Constants.USER).child(session.getSecondPerson()).child("inChat").setValue(false, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        // TODO remove chat
+                        // FirebaseDatabase.getInstance().getReference(Constants.SESSION).child(lastSession).removeValue();
+                    }
+                });
+            }
+        });
+
     }
     private void loadSession(){
         FirebaseDatabase.getInstance().getReference(Constants.SESSION).child(lastSession).addListenerForSingleValueEvent(new ValueEventListener() {

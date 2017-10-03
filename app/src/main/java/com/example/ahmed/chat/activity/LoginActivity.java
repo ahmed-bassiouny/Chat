@@ -1,11 +1,18 @@
 package com.example.ahmed.chat.activity;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ahmed.chat.R;
@@ -14,6 +21,7 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -26,18 +34,30 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class LoginActivity extends AppCompatActivity {
 
     private final int RC_SIGN_IN = 100;
-    Button btnGoogle;
+    SignInButton btnGoogle;
     private FirebaseAuth mAuth;
     GoogleSignInOptions gso;
     GoogleApiClient mGoogleApiClient;
 
+    // animation
+    Animation animationImage;
+    Animation animationButton;
+    Animation animationText;
+    ImageView logo;
+    TextView description;
+    boolean firstTime = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getSupportActionBar().hide();
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
         initView();
         configrationFirebase();
         handleEvent();
+        startAnimation();
     }
 
     private void configrationFirebase() {
@@ -63,7 +83,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        btnGoogle = (Button) findViewById(R.id.btn_google);
+        btnGoogle = (SignInButton) findViewById(R.id.btn_google);
+        logo = (ImageView)findViewById(R.id.logo);
+        description = (TextView)findViewById(R.id.description);
+        animationImage = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.move);
+        animationText = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.opacity);
+        logo.startAnimation(animationImage);
+        description.setVisibility(View.INVISIBLE);
+        btnGoogle.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -121,6 +148,29 @@ public class LoginActivity extends AppCompatActivity {
         MyAccount.setImage(user.getPhotoUrl());
         startActivity(new Intent(this,MainActivity.class));
         finish();
+    }
+    public void startAnimation(){
+        animationImage.setAnimationListener(new Animation.AnimationListener(){
+            @Override
+            public void onAnimationStart(Animation arg0) {
+            }
+            @Override
+            public void onAnimationRepeat(Animation arg0) {
+            }
+            @Override
+            public void onAnimationEnd(Animation arg0) {
+                description.setVisibility(View.VISIBLE);
+                description.startAnimation(animationText);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        btnGoogle.setVisibility(View.VISIBLE);
+                        btnGoogle.startAnimation(animationText);
+                        firstTime = false;
+                    }
+                }, 2000);
+            }
+        });
     }
 
 }

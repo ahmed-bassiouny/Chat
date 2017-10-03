@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
     <ImageView
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:id="@+id/image"
         android:src="@drawable/unknow"/>
     <TextView
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_blue_button"
         android:layout_margin="5dp"
-        android:padding="5dp"
+        android:padding="10dp"
         android:gravity="center"
         android:layout_gravity="center"
         android:id="@+id/tvt_msg"

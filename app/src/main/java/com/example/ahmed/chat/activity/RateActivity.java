@@ -37,7 +37,6 @@ public class RateActivity extends AppCompatActivity {
             public void onClick(View view) {
                 currentRate += rating.getRating();
                 FirebaseDatabase.getInstance().getReference(Constants.USER).child(userId).child("rate").setValue(currentRate);
-                MainActivity.chatting=false;
                 finish();
             }
         });

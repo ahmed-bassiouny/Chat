@@ -21,7 +21,7 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/borderprimary"
             android:gravity="center"
-            android:text="Say What you want"
+            android:text="Say What you feel"
             android:textSize="20sp" />
         <TextView
             android:id="@+id/btn_listen"
@@ -52,6 +52,7 @@
         android:layout_height="40dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:enabled="false"
         android:layout_marginBottom="10dp"
         android:background="@drawable/border"
         android:gravity="center"

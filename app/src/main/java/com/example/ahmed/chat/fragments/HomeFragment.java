@@ -83,9 +83,13 @@ public class HomeFragment extends Fragment {
         btnCancelRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                myRef.child(MyAccount.getId()).setValue(false);
-                makeRequest(true);
-                Toast.makeText(getActivity(), "You Canceled Request", Toast.LENGTH_SHORT).show();
+                myRef.child(MyAccount.getId()).setValue(false, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        makeRequest(true);
+                        Toast.makeText(getActivity(), "You Canceled Request", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
         btnListen.setOnClickListener(new View.OnClickListener() {

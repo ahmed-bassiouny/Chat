@@ -67,6 +67,7 @@ public class ProfileFragment extends Fragment {
         tvEmail.setText(MyAccount.getEmail());
         Glide.with(getContext())
                 .load(MyAccount.getImage())
+                .placeholder(R.drawable.unknow)
                 .into(profileImage);
     }
 
@@ -114,8 +115,9 @@ public class ProfileFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User value = dataSnapshot.getValue(User.class);
                 if (value !=null) {
+
                     tvChatNumber.setText(String.valueOf(value.chatWith));
-                    tvRate.setText(String.valueOf(value.rate)+" %");
+                    tvRate.setText(calcRate(value.chatWith , value.rate)+" %");
                 }else {
                     FirebaseDatabase.getInstance().getReference().child(Constants.USER).child(MyAccount.getId()).setValue(new User());
                 }
@@ -126,5 +128,11 @@ public class ProfileFragment extends Fragment {
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private double calcRate(int chatwith , double rate){
+        if(chatwith == 0)
+            return 0;
+        return (rate / (chatwith * 10))*100;
     }
 }

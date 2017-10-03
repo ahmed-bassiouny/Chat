@@ -106,6 +106,12 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        MainActivity.chatting=false;
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         FirebaseDatabase.getInstance().getReference(Constants.SESSION).child(lastSession).child(Constants.MESSAGE).removeEventListener(childEventListener);

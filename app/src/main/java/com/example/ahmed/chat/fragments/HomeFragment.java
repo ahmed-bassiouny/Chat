@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.ahmed.chat.R;
 import com.example.ahmed.chat.helper.Constants;
+import com.example.ahmed.chat.helper.Utils;
 import com.example.ahmed.chat.model.MyAccount;
 import com.example.ahmed.chat.model.Session;
 import com.google.firebase.database.DataSnapshot;
@@ -70,6 +71,9 @@ public class HomeFragment extends Fragment {
         btnListen = view.findViewById(R.id.btn_listen);
         btnCancelRequest = view.findViewById(R.id.btn_cancelrequest);
         mkLoader = view.findViewById(R.id.mkloader);
+        Utils.setFont(getContext(),btnTalk);
+        Utils.setFont(getContext(),btnListen);
+        Utils.setFont(getContext(),btnCancelRequest);
     }
 
     private void initEvent() {
@@ -159,30 +163,34 @@ public class HomeFragment extends Fragment {
         });
     }
     private void findPerson(final String personKey){
-        // TODO : update status in chat in user model
-        FirebaseDatabase.getInstance().getReference(Constants.USER).child(MyAccount.getId()).child("inChat").setValue(true);
-        FirebaseDatabase.getInstance().getReference(Constants.USER).child(personKey).child("inChat").setValue(true);
-        // TODO : update status person in waiting list to false
+
+        // set user in waiting list false
         myRef.child(personKey).setValue(false);
-        // TODO : make key in session root for 2 user
+
+        // generate new key for new session
         DatabaseReference newRef = FirebaseDatabase.getInstance().getReference().child(Constants.SESSION).push();
         final String sessionKey = newRef.getKey();
-        // TODO : set key in user model for 2 user
-        FirebaseDatabase.getInstance().getReference(Constants.USER).child(MyAccount.getId()).child("lastSession").setValue(sessionKey);
-        FirebaseDatabase.getInstance().getReference(Constants.USER).child(personKey).child("lastSession").setValue(sessionKey, new DatabaseReference.CompletionListener() {
+        // update my account with key session
+        FirebaseDatabase.getInstance().getReference(Constants.USER).child(MyAccount.getId()).child("lastSession").setValue(sessionKey, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                //TODO : create Session
-                Session session = new Session();
-                session.setFirstPerson(MyAccount.getId());
-                session.setSecondPerson(personKey);
-                FirebaseDatabase.getInstance().getReference(Constants.SESSION).child(sessionKey).setValue(session);
+                // update status my account in chat true
+                FirebaseDatabase.getInstance().getReference(Constants.USER).child(MyAccount.getId()).child("inChat").setValue(true);
+                // update another user with key session
+                FirebaseDatabase.getInstance().getReference(Constants.USER).child(personKey).child("lastSession").setValue(sessionKey, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        // update status user in chat true
+                        FirebaseDatabase.getInstance().getReference(Constants.USER).child(personKey).child("inChat").setValue(true);
+                        //TODO : create Session
+                        Session session = new Session();
+                        session.setFirstPerson(MyAccount.getId());
+                        session.setSecondPerson(personKey);
+                        FirebaseDatabase.getInstance().getReference(Constants.SESSION).child(sessionKey).setValue(session);
+                    }
+                });
             }
         });
-        // TODO : intent to chat activity with key message
-       /* Intent intent = new Intent(getActivity(), ChatActivity.class);
-        intent.putExtra(Constants.SESSION_KEY,sessionKey);
-        startActivity(intent);*/
     }
 
     @Override

@@ -21,8 +21,7 @@
         android:background="@drawable/rounded_blue_button"
         android:layout_margin="5dp"
         android:padding="10dp"
-        android:gravity="center"
-        android:layout_gravity="center"
+        android:textAlignment="textStart"
         android:id="@+id/tvt_msg"
         android:textColor="#000"
         android:textSize="20sp"/>

@@ -22,6 +22,7 @@ import com.bumptech.glide.request.target.Target;
 import com.example.ahmed.chat.R;
 import com.example.ahmed.chat.activity.LoginActivity;
 import com.example.ahmed.chat.helper.Constants;
+import com.example.ahmed.chat.helper.Utils;
 import com.example.ahmed.chat.model.MyAccount;
 import com.example.ahmed.chat.model.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,6 +30,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.text.DecimalFormat;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,7 +41,7 @@ public class ProfileFragment extends Fragment {
 
     private static ProfileFragment mInstance;
     private ImageView profileImage;
-    private TextView tvName,tvEmail,tvChatNumber,tvRate,tvSignOut;
+    private TextView tvName,tvEmail,tvChatNumber,tvRate,tvSignOut,tvRateFixed,tvChatWithFixed;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -100,9 +103,18 @@ public class ProfileFragment extends Fragment {
         tvName=view.findViewById(R.id.tv_name);
         tvEmail=view.findViewById(R.id.tv_email);
         tvRate=view.findViewById(R.id.tv_rate);
+        tvRateFixed=view.findViewById(R.id.tv_rate_fixed);
         tvChatNumber=view.findViewById(R.id.tv_number_of_chat);
+        tvChatWithFixed = view.findViewById(R.id.tv_chat_with_fixed);
         profileImage=view.findViewById(R.id.profile_image);
         tvSignOut=view.findViewById(R.id.btn_signout);
+        Utils.setFont(getContext(),tvName);
+        Utils.setFont(getContext(),tvEmail);
+        Utils.setFont(getContext(),tvRate);
+        Utils.setFont(getContext(),tvChatNumber);
+        Utils.setFont(getContext(),tvSignOut);
+        Utils.setFont(getContext(),tvChatWithFixed);
+        Utils.setFont(getContext(),tvRateFixed);
     }
 
     private void signOut(){
@@ -130,9 +142,11 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    private double calcRate(int chatwith , double rate){
+    private String calcRate(int chatwith , double rate){
+        double result ;
         if(chatwith == 0)
-            return 0;
-        return (rate / (chatwith * 10))*100;
+            return "0";
+        result = (rate / (chatwith * 10))*100;
+        return new DecimalFormat("##.##").format(result);
     }
 }

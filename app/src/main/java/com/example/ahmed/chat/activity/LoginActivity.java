@@ -1,6 +1,7 @@
 package com.example.ahmed.chat.activity;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +16,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.example.ahmed.chat.R;
+import com.example.ahmed.chat.helper.Utils;
 import com.example.ahmed.chat.model.MyAccount;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -30,6 +33,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import io.fabric.sdk.android.Fabric;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -41,15 +45,15 @@ public class LoginActivity extends AppCompatActivity {
 
     // animation
     Animation animationImage;
-    Animation animationButton;
     Animation animationText;
     ImageView logo;
-    TextView description;
+    TextView description,txVersionNumber;
     boolean firstTime = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getSupportActionBar().hide();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -86,11 +90,15 @@ public class LoginActivity extends AppCompatActivity {
         btnGoogle = (SignInButton) findViewById(R.id.btn_google);
         logo = (ImageView)findViewById(R.id.logo);
         description = (TextView)findViewById(R.id.description);
+        txVersionNumber = (TextView) findViewById(R.id.version_number);
         animationImage = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.move);
         animationText = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.opacity);
         logo.startAnimation(animationImage);
         description.setVisibility(View.INVISIBLE);
         btnGoogle.setVisibility(View.INVISIBLE);
+        Utils.setFont(this,description);
+        Utils.setFont(this,txVersionNumber);
+        txVersionNumber.setText(Utils.getVersionNumber(this));
     }
 
     @Override

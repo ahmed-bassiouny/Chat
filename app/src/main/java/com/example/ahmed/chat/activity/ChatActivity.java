@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.ahmed.chat.R;
 import com.example.ahmed.chat.adapters.ItemChatAdapter;
 import com.example.ahmed.chat.helper.Constants;
+import com.example.ahmed.chat.helper.Utils;
 import com.example.ahmed.chat.model.Message;
 import com.example.ahmed.chat.model.MyAccount;
 import com.example.ahmed.chat.model.Session;
@@ -56,6 +57,7 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
 
         etNewMsg = (EditText) findViewById(R.id.et_new_msg);
+        Utils.setFont(this,etNewMsg);
         ivSend = (ImageView) findViewById(R.id.iv_send);
         ivSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,7 +211,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Message message = dataSnapshot.getValue(Message.class);
                 if (itemChatAdapter == null) {
-                    itemChatAdapter = new ItemChatAdapter();
+                    itemChatAdapter = new ItemChatAdapter(ChatActivity.this);
                     recyclerView.setAdapter(itemChatAdapter);
                 }
                 itemChatAdapter.addMessage(message);

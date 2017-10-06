@@ -9,10 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".activity.MainActivity"
-            android:label="@string/app_name" />
-        <activity android:name=".activity.LoginActivity">
+        <activity android:name=".activity.LoginActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,9 +18,19 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.ChatActivity"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait"/>
         <activity android:name=".activity.RateActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppThemeDialog"></activity>
+        <activity
+            android:name=".activity.MainActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="a07905da1fb4c784f0369b04a71691297ca15843" />
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>
